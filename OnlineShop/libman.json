@@ -1,0 +1,14 @@
+{
+  "version": "1.0",
+  "defaultProvider": "cdnjs",
+  "libraries": [
+    {
+      "library": "react@17.0.1",
+      "destination": "lib/react/"
+    },
+    {
+      "library": "material-ui@4.11.2",
+      "destination": "wwwroot/lib/"
+    }
+  ]
+}
