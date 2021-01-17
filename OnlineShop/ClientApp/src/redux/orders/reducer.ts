@@ -56,7 +56,28 @@ function ordersReducer(
         ...state,
         get_order_list_pending: false,
         get_order_list_error: action.payload,
-        order_list: [],
+      };
+    }
+    case OrderActionTypes.GET_ORDERS_USER: {
+      return {
+        ...state,
+        get_orders_user_pending: true,
+        get_orders_user_error: null,
+      };
+    }
+    case OrderActionTypes.GET_ORDERS_USER_SUCCESS: {
+      return {
+        ...state,
+        get_orders_user_pending: false,
+        get_orders_user_error: null,
+        user_order_list: action.payload,
+      };
+    }
+    case OrderActionTypes.GET_ORDERS_USER_FAILED: {
+      return {
+        ...state,
+        get_orders_user_pending: false,
+        get_orders_user_error: action.payload,
       };
     }
     case OrderActionTypes.EDIT_ORDER: {
@@ -64,11 +85,10 @@ function ordersReducer(
         ...state,
         edit_order_pending: true,
         edit_order_error: null,
-        order: null,
       };
     }
     case OrderActionTypes.EDIT_ORDER_SUCCESS: {
-      if (action.payload === state.cart?.id) {
+      if (action.payload) {
         return {
           ...state,
           cart: null,

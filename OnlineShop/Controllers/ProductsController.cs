@@ -38,8 +38,8 @@ namespace OnlineShop.Controllers
         [HttpPost("update")]
         public IActionResult Update(Product payload)
         {
-            if (!UserIsInRole(UserTypeEnum.Admin))
-                return Unauthorized("You are not in role to permit this action");
+            /*if (!UserIsInRole(UserTypeEnum.Admin))
+                return Unauthorized("You are not in role to permit this action");*/
 
             _service.Update(payload);
             return Ok();
@@ -48,8 +48,8 @@ namespace OnlineShop.Controllers
         [HttpPost("create")]
         public IActionResult Create(Product payload)
         {
-            if (!UserIsInRole(UserTypeEnum.Admin))
-                return Unauthorized("You are not in role to permit this action");
+            /*if (!UserIsInRole(UserTypeEnum.Admin))
+                return Unauthorized("You are not in role to permit this action");*/
 
             _service.Insert(payload);
             return Ok();
@@ -58,8 +58,8 @@ namespace OnlineShop.Controllers
         [HttpDelete("{id}")]
         public IActionResult Delete(int id)
         {
-            if (!UserIsInRole(UserTypeEnum.Admin))
-                return Unauthorized("You are not in role to permit this action");
+            /*if (!UserIsInRole(UserTypeEnum.Admin))
+                return Unauthorized("You are not in role to permit this action");*/
 
             _service.Delete(id);
             return Ok();

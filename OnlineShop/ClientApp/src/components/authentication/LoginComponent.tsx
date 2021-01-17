@@ -6,7 +6,7 @@ import { Button, Card } from "reactstrap";
 import { AppState } from "../../redux";
 import { AuthStore } from "../../redux/authentication";
 import TextFieldComponent from "../shared/TextFieldComponent";
-import { IconButton, InputAdornment } from "@material-ui/core";
+import { Hidden, IconButton, InputAdornment } from "@material-ui/core";
 import { Email, Lock, Visibility, VisibilityOff } from "@material-ui/icons";
 
 interface IProps {
@@ -38,9 +38,11 @@ const LoginComponent = (props: IProps) => {
 
   return (
     <div className="row">
-      <div className="col-sm-3" />
-      <div className="col-sm-6">
-        <Card style={{ height: 300, padding: 50 }}>
+      <Hidden mdDown={true}>
+        <div className="col-sm-3" />
+      </Hidden>
+      <div className="col-sm-12 col-lg-6">
+        <Card style={{ padding: "3vw" }} className="custom-card">
           <div className="form-group" style={{ marginLeft: 20 }}>
             <TextFieldComponent
               id="email"
@@ -86,13 +88,8 @@ const LoginComponent = (props: IProps) => {
               }
             />
           </div>
-          <div style={{ textAlign: "center", padding: "15px 0px" }}>
-            <Button
-              variant="contained"
-              color="success"
-              style={{ color: "white" }}
-              onClick={loginHandler}
-            >
+          <div className="button-container">
+            <Button variant="contained" color="success" onClick={loginHandler}>
               Log in
             </Button>
           </div>
@@ -105,7 +102,9 @@ const LoginComponent = (props: IProps) => {
           </div>
         </Card>
       </div>
-      <div className="col-sm-3" />
+      <Hidden mdDown={true}>
+        <div className="col-sm-3" />
+      </Hidden>
     </div>
   );
 };

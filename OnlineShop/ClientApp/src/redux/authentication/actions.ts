@@ -22,12 +22,6 @@ class authActions implements IAuthActions {
   }
 
   loginAction(Email: string, Password: string) {
-    Swal.fire({
-      text: "Va rugam asteptati!",
-      icon: "warning",
-      showConfirmButton: false,
-      timer: 1500,
-    });
     return (dispatch: Dispatch<any>) => {
       dispatch({
         type: AuthActionTypes.LOGIN,
@@ -45,7 +39,7 @@ class authActions implements IAuthActions {
           }
         })
         .catch((error) => {
-          Swal.update({
+          Swal.fire({
             text: "A aparut o eroare! Va rugam reincercati",
             icon: "error",
           });

@@ -10,8 +10,8 @@ using System.Threading.Tasks;
 
 namespace OnlineShop.Controllers
 {
-    [Route("api/[controller]")]
     [ApiController]
+    [Route("api/[controller]")]
     public class CategoriesController : ControllerBase
     {
         private readonly ICategoryService _service;
@@ -37,6 +37,9 @@ namespace OnlineShop.Controllers
         [HttpPost("update")]
         public IActionResult Update(Category payload)
         {
+            /*if (!UserIsInRole(UserTypeEnum.Admin))
+                return Unauthorized("You are not in role to permit this action");*/
+
             _service.Update(payload);
             return Ok();
         }
@@ -44,8 +47,8 @@ namespace OnlineShop.Controllers
         [HttpPost("create")]
         public IActionResult Create(Category payload)
         {
-            if (!UserIsInRole(UserTypeEnum.Admin))
-                return Unauthorized("You are not in role to permit this action");
+            /*if (!UserIsInRole(UserTypeEnum.Admin))
+                return Unauthorized("You are not in role to permit this action");*/
 
             _service.Insert(payload);
             return Ok();

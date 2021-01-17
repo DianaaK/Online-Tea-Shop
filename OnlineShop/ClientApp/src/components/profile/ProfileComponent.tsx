@@ -183,11 +183,14 @@ const ProfileComponent = (
   };
 
   return (
-    <Card style={{ height: 800, width: 800, margin: "auto", padding: 30 }}>
+    <Card
+      style={{ height: 675, width: 800, margin: "auto", padding: 30 }}
+      className="custom-card"
+    >
       {user ? (
         <>
           {renderProfileFields()}
-          <div style={{ textAlign: "center", padding: "15px 0px" }}>
+          <div className="button-container">
             <Button
               variant="contained"
               color="success"
@@ -197,7 +200,7 @@ const ProfileComponent = (
             </Button>
           </div>
           {renderAddressFields()}
-          <div style={{ textAlign: "center", padding: "15px 0px" }}>
+          <div className="button-container">
             <Button variant="contained" color="success" onClick={saveAddress}>
               Salveaza adresa
             </Button>

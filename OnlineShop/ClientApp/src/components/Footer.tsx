@@ -1,15 +1,7 @@
 const FooterComponent = () => {
   return (
     <div>
-      <div
-        className="row"
-        style={{
-          backgroundColor: "#305738",
-          color: "white",
-          padding: 30,
-          margin: 0,
-        }}
-      >
+      <div className="row footer">
         <div className="col-sm-5">
           <h5 className="title">Ceainarie.ro</h5>
           <p>Proiect realizat de Tugui Diana Ecaterina</p>
@@ -42,8 +34,8 @@ const FooterComponent = () => {
         style={{
           padding: 10,
           textAlign: "center",
-          backgroundColor: "#253d2a",
-          color: "white",
+          backgroundColor: "#1e3021",
+          color: "#dce0e0",
         }}
       >
         @FMI Unibuc 2021
@@ -56,6 +48,6 @@ export default FooterComponent;
 
 const styles = {
   listLink: {
-    color: "white",
+    color: "#dce0e0",
   },
 };

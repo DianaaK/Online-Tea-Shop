@@ -60,6 +60,31 @@ class OrdersActions implements IOrdersActions {
     };
   }
 
+  getOrdersForUserAction(userId: string) {
+    return (dispatch: Dispatch<any>) => {
+      dispatch({
+        type: OrderActionTypes.GET_ORDERS_USER,
+      });
+      Server.get(`orders/all/${userId}`)
+        .then((response: any) => {
+          dispatch({
+            type: OrderActionTypes.GET_ORDERS_USER_SUCCESS,
+            payload: response.data as Array<OrderDTO>,
+          });
+        })
+        .catch((error) => {
+          Swal.fire({
+            text: "Din cauza unei erori, lista nu a putut fi incarcata!",
+            timer: 1500,
+          });
+          dispatch({
+            type: OrderActionTypes.GET_ORDERS_USER_FAILED,
+            payload: Server.errorParse(error),
+          });
+        });
+    };
+  }
+
   getOrderAction(orderId: string) {
     return (dispatch: Dispatch<any>) => {
       dispatch({
@@ -73,6 +98,10 @@ class OrdersActions implements IOrdersActions {
           });
         })
         .catch((error) => {
+          Swal.fire({
+            text: "Din cauza unei erori, comanda nu a putut fi incarcata!",
+            timer: 1500,
+          });
           dispatch({
             type: OrderActionTypes.GET_ORDER_FAILED,
             payload: Server.errorParse(error),
@@ -81,19 +110,24 @@ class OrdersActions implements IOrdersActions {
     };
   }
 
-  editOrderAction(order: OrderDTO) {
+  editOrderAction(order: OrderDTO, isCart?: boolean) {
     return (dispatch: Dispatch<any>) => {
       dispatch({
         type: OrderActionTypes.EDIT_ORDER,
       });
-      let url = "orders/update";
-      Server.post(url, order)
+      Server.post("orders/update", order)
         .then(() => {
           dispatch({
             type: OrderActionTypes.EDIT_ORDER_SUCCESS,
-            payload: order.id,
+            payload: isCart,
           });
-          dispatch(ordersActions.getOrderAction(order.id + ""));
+          if (!isCart) {
+            Swal.fire({
+              text: "Comanda a fost editata!",
+              icon: "success",
+            });
+          }
+          dispatch(ordersActions.getOrderListAction());
         })
         .catch((error) => {
           dispatch({
@@ -106,7 +140,7 @@ class OrdersActions implements IOrdersActions {
 
   deleteOrderAction(orderId: string) {
     return (dispatch: Dispatch<any>) => {
-      Swal.fire({ text: "Produsul este sters..", timer: 1500 });
+      Swal.fire({ text: "Comanda este stearsa..", timer: 1500 });
       dispatch({
         type: OrderActionTypes.DELETE_ORDER,
       });
@@ -117,13 +151,14 @@ class OrdersActions implements IOrdersActions {
             type: OrderActionTypes.DELETE_ORDER_SUCCESS,
           });
           Swal.update({
-            text: "Produsul a fost sters!",
+            text: "Comanda a fost stearsa!",
             icon: "success",
           });
+          dispatch(ordersActions.getOrderListAction());
         })
         .catch((error) => {
           Swal.update({
-            text: "Din cauza unei erori, produsul nu a putut fi sters!",
+            text: "Din cauza unei erori, comanda nu a putut fi stearsa!",
             icon: "error",
           });
           dispatch({
@@ -164,6 +199,10 @@ class OrdersActions implements IOrdersActions {
         .then(() => {
           dispatch({
             type: OrderActionTypes.ADD_ITEM_ORDER_SUCCESS,
+          });
+          Swal.fire({
+            text: "Produsul a fost adaugat in cos!",
+            icon: "success",
           });
           dispatch(ordersActions.getOrderAction(orderId + ""));
         })

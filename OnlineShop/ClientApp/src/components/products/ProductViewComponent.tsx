@@ -1,13 +1,14 @@
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import { connect } from "react-redux";
 import { withRouter } from "react-router";
 import { RouteComponentProps } from "react-router-dom";
-import { Card } from "reactstrap";
+import { Card, Button } from "reactstrap";
 import Swal from "sweetalert2";
 import { AppState } from "../../redux";
 import { OrdersActions } from "../../redux/orders";
 import { ProductsActions } from "../../redux/products";
-import { OrderDTO, OrderStatus, ProductDTO, UserDTO } from "../../redux/types";
+import { OrderDTO, ProductDTO, UserDTO } from "../../redux/types";
+import placeholder from "../../assets/images/placeholder.jpg";
 
 interface IProps {
   user: UserDTO | null;
@@ -35,12 +36,6 @@ const ProductViewComponent = (
         icon: "warning",
         showConfirmButton: true,
       });
-      // } else if (!props.cart) {
-      //   const order = {
-      //     status: OrderStatus.CART,
-      //     userId: props.user?.id,
-      //   };
-      //   props.createOrderAction(order);
     } else if (props.cart?.id && props.product?.id) {
       props.addItemToOrderAction(props.cart.id, props.product.id);
     }
@@ -48,53 +43,58 @@ const ProductViewComponent = (
 
   return (
     <>
-      <Card style={{ height: 800, width: 800, margin: "auto", padding: 30 }}>
+      <Card style={styles.productCard} className="custom-card">
         {props.product ? (
           <div style={{ ...styles.container, position: "relative" }}>
             <div
+              className="product-image"
               style={{
-                ...styles.image,
-                backgroundImage: `url(${props.product.imageUrl})`,
+                backgroundImage: `url(${
+                  props.product.imageUrl ? props.product.imageUrl : placeholder
+                })`,
               }}
             />
             <div
-              style={{
-                margin: 20,
-                display: "flex",
-                flexDirection: "column",
-                justifyContent: "space-evenly",
-              }}
+              style={{ ...styles.productCardContent, flexDirection: "column" }}
             >
-              <div style={{ ...styles.title }}>{props.product.name}</div>
-              <div>
-                <div style={{ ...styles.descriptionTag }}>Descriere</div>
-                <div>{props.product.description}</div>
+              <div className="product-title" style={{ fontSize: 22 }}>
+                {props.product.name}
               </div>
-              <div style={{ ...styles.descriptionTag, alignSelf: "flex-end" }}>
-                {props.product.price} RON
+              <div
+                className="product-category"
+                style={{ marginTop: -40, marginLeft: 170 }}
+              >
+                {props.product.category?.name}
               </div>
+              <div
+                className="product-description"
+                style={{ fontSize: 16, height: "initial" }}
+              >
+                {props.product.description}
+              </div>
+              <div className="product-price">{props.product.price} RON</div>
               <div>
                 <div
                   style={{
-                    color: props.product.isInStock ? "#518D0A" : "red",
+                    color: props.product.isInStock ? "#3f9168" : "#9c5454",
                     margin: 10,
                   }}
                 >
                   {props.product.isInStock ? "In stoc" : "Stoc epuizat"}
                 </div>
-                <div
-                  onClick={props.product.isInStock ? addToCart : () => {}}
-                  style={{
-                    ...styles.checkDetails,
-                    textAlign: "center",
-                    cursor: props.product.isInStock ? "pointer" : "not-allowed",
-                    backgroundColor: props.product.isInStock
-                      ? "#28A745"
-                      : "grey",
-                  }}
-                >
-                  Adauga in cos
-                </div>
+                {props.product.isInStock ? (
+                  <Button
+                    variant="contained"
+                    color="success"
+                    onClick={addToCart}
+                  >
+                    Adauga in cos
+                  </Button>
+                ) : (
+                  <Button variant="contained" color="danger" disabled>
+                    Adauga in cos
+                  </Button>
+                )}
               </div>
             </div>
           </div>
@@ -102,16 +102,19 @@ const ProductViewComponent = (
           "Nu a fost gasit produsul"
         )}
       </Card>
-      <Card style={{ width: 800, margin: "auto", padding: 30, marginTop: 20 }}>
+      <Card style={styles.categoryCard} className="custom-card">
         {props.product?.category ? (
           <>
-            <div>
+            <div
+              className="product-title"
+              style={{ fontSize: 20, lineHeight: "1.9em" }}
+            >
               Despre{" "}
               <span style={{ fontWeight: 600 }}>
                 {props.product?.category.name}
               </span>
             </div>
-            <div style={{ padding: 10 }}>
+            <div className="product-description">
               {props.product?.category.description}
             </div>
           </>
@@ -146,26 +149,22 @@ const styles = {
     display: "flex",
     height: "100%",
   },
-  image: {
-    margin: 15,
-    width: "50%",
-    height: "90%",
-    backgroundPosition: "center",
-    backgroundSize: "cover",
+  productCard: {
+    height: 700,
+    width: 800,
+    margin: "auto",
+    padding: 30,
   },
-  title: {
-    fontSize: 18,
-    fontWeight: 700,
+  productCardContent: {
+    margin: 20,
+    display: "flex",
+    justifyContent: "space-evenly",
   },
-  descriptionTag: {
-    fontWeight: 600,
-    margin: "10px 0",
-    width: "100%",
-  },
-  checkDetails: {
-    padding: 10,
-    borderRadius: 5,
-    width: "150px",
-    color: "white",
+  categoryCard: {
+    minHeight: 100,
+    width: 800,
+    margin: "auto",
+    padding: 30,
+    marginTop: 20,
   },
 };

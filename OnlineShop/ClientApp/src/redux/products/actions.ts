@@ -3,10 +3,12 @@ import { ProductActionTypes } from ".";
 import { ProductDTO } from "../types";
 import { Server } from "../../utils";
 import Swal from "sweetalert2";
+import { AuthStore } from "../authentication";
 
 export interface IProductsActions {
   getProductListAction(): any;
   getProductAction(productId: string): any;
+  addProductAction(product: ProductDTO): any;
   editProductAction(product: ProductDTO): any;
   deleteProductAction(productId: string): any;
 }
@@ -50,8 +52,42 @@ class ProductsActions implements IProductsActions {
           });
         })
         .catch((error) => {
+          Swal.fire({
+            text: "Din cauza unei erori, produsul nu a putut fi incarcat!",
+            timer: 1500,
+          });
           dispatch({
             type: ProductActionTypes.GET_PRODUCT_FAILED,
+            payload: Server.errorParse(error),
+          });
+        });
+    };
+  }
+
+  addProductAction(product: ProductDTO) {
+    return (dispatch: Dispatch<any>) => {
+      dispatch({
+        type: ProductActionTypes.ADD_PRODUCT,
+      });
+      Server.post("products/create", product)
+        .then(() => {
+          dispatch({
+            type: ProductActionTypes.ADD_PRODUCT_SUCCESS,
+          });
+          Swal.fire({
+            text: "Produsul a fost creat!",
+            icon: "success",
+          });
+          dispatch(productsActions.getProductListAction());
+          dispatch(AuthStore.actions.redirectAction("/admin/products"));
+        })
+        .catch((error) => {
+          Swal.fire({
+            text: "Din cauza unei erori, produsul nu a putut fi creat!",
+            icon: "error",
+          });
+          dispatch({
+            type: ProductActionTypes.ADD_PRODUCT_FAILED,
             payload: Server.errorParse(error),
           });
         });
@@ -63,17 +99,20 @@ class ProductsActions implements IProductsActions {
       dispatch({
         type: ProductActionTypes.EDIT_PRODUCT,
       });
-      let url = "products/update";
-      Server.post(url, product)
+      Server.post("products/update", product)
         .then(() => {
           dispatch({
             type: ProductActionTypes.EDIT_PRODUCT_SUCCESS,
           });
-          // dispatch(productsActions.getProductById(product.id + ""));
-          Swal.update({ text: "Produsul a fost actualizat!", icon: "success" });
+          Swal.fire({
+            text: "Produsul a fost actualizat!",
+            icon: "success",
+          });
+          dispatch(productsActions.getProductListAction());
+          dispatch(AuthStore.actions.redirectAction("/admin/products"));
         })
         .catch((error) => {
-          Swal.update({
+          Swal.fire({
             text: "Din cauza unei erori, produsul nu a putut fi actualizat!",
             icon: "error",
           });
@@ -87,7 +126,6 @@ class ProductsActions implements IProductsActions {
 
   deleteProductAction(productId: string) {
     return (dispatch: Dispatch<any>) => {
-      Swal.fire({ text: "Produsul este sters..", timer: 1500 });
       dispatch({
         type: ProductActionTypes.DELETE_PRODUCT,
       });
@@ -98,13 +136,14 @@ class ProductsActions implements IProductsActions {
             type: ProductActionTypes.DELETE_PRODUCT_SUCCESS,
             payload: response.data as ProductDTO,
           });
-          Swal.update({
+          Swal.fire({
             text: "Produsul a fost sters!",
             icon: "success",
           });
+          dispatch(productsActions.getProductListAction());
         })
         .catch((error) => {
-          Swal.update({
+          Swal.fire({
             text: "Din cauza unei erori, produsul nu a putut fi sters!",
             icon: "error",
           });

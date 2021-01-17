@@ -5,6 +5,7 @@ import { createBrowserHistory } from "history";
 import { IProductsState, ProductsReducer } from "./products";
 import { IUserState, UsersReducer } from "./users";
 import { IOrdersState, OrdersReducer } from "./orders";
+import { CategoriesReducer, ICategoriesState } from "./categories";
 
 export const history = createBrowserHistory();
 
@@ -13,6 +14,7 @@ export const history = createBrowserHistory();
 */
 export const rootReducer: Reducer<any> = combineReducers({
   auth: AuthStore.reducer,
+  categories: CategoriesReducer,
   orders: OrdersReducer,
   products: ProductsReducer,
   users: UsersReducer,
@@ -32,6 +34,7 @@ export const defaultReducer = (state: any, action: any) => {
 */
 export interface AppState {
   auth: IAuthState;
+  categories: ICategoriesState;
   orders: IOrdersState;
   products: IProductsState;
   users: IUserState;

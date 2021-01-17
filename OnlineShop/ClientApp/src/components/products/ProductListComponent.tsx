@@ -26,16 +26,10 @@ const ProductsListComponent = (props: IProps) => {
   };
 
   return (
-    <div
-      style={{
-        display: "flex",
-        flexWrap: "wrap",
-        justifyContent: "space-between",
-      }}
-    >
+    <div style={{ ...styles.container, flexWrap: "wrap" }}>
       {props.product_list
         ? props.product_list.map((item: ProductDTO) => (
-            <div key={item.id} style={{ width: "28%", margin: 20 }}>
+            <div key={item.id} style={styles.card}>
               <ProductItem product={item} onClick={onDetailsClick} />
             </div>
           ))
@@ -59,3 +53,14 @@ const dispatchToProps = {
 export default withRouter(
   connect(mapStateToProps, dispatchToProps)(ProductsListComponent)
 );
+
+const styles = {
+  container: {
+    display: "flex",
+    justifyContent: "space-between",
+  },
+  card: {
+    width: 470,
+    margin: "20px 10px",
+  },
+};

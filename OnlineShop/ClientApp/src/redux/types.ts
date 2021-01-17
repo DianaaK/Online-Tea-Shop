@@ -36,10 +36,12 @@ export class CategoryDTO {
 
 export class OrderDTO {
   id?: number;
+  createTime?: string;
   amount?: number;
   status: OrderStatus = OrderStatus.PENDING;
   userId?: number;
   products?: Array<ProductDTO>;
+  user?: UserDTO;
 }
 
 export enum OrderStatus {

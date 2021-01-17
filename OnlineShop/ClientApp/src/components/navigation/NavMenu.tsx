@@ -7,21 +7,21 @@ import {
   NavbarToggler,
   NavItem,
   NavLink,
-  Popover,
 } from "reactstrap";
 import { Link } from "react-router-dom";
 import { AppState } from "../../redux";
 import { OrderDTO, UserDTO } from "../../redux/types";
-import "./NavMenu.css";
-import cover from "../../assets/images/cover.jpg";
 import { reduxContainer } from "../../redux/reduxContainer";
 import { AuthStore } from "../../redux/authentication";
 import { OrdersActions } from "../../redux/orders";
 import { UserActions } from "../../redux/users";
-import { Badge } from "@material-ui/core";
+import { Badge, Popover } from "@material-ui/core";
+import { AuthUtils } from "../../utils";
+import "./NavMenu.css";
+import cover from "../../assets/images/cover.jpg";
 
 interface IProps {
-  auth_token: any;
+  token: any;
   user: UserDTO | null;
   cart: OrderDTO | null;
   logoutAction(): any;
@@ -31,7 +31,8 @@ interface IProps {
 
 interface IState {
   isOpen: boolean;
-  profileOpen: boolean;
+  adminPopoverAnchor: any;
+  profilePopoverAnchor: any;
 }
 
 class NavMenu extends React.Component<IProps, IState> {
@@ -39,22 +40,41 @@ class NavMenu extends React.Component<IProps, IState> {
     super(props);
     this.state = {
       isOpen: false,
-      profileOpen: false,
+      adminPopoverAnchor: null,
+      profilePopoverAnchor: null,
     };
   }
 
   componentDidMount() {
-    const userId = this.props.auth_token?.id;
+    const userId = this.props.token?.id;
     if (userId) {
       this.props.getUserById(userId);
       this.props.getCartOrder(userId);
     }
   }
 
-  toggleProfile = () => {
-    this.setState({
-      profileOpen: !this.state.profileOpen,
-    });
+  togglePopoverOpen = (event: any, type: string) => {
+    if (type === "admin") {
+      this.setState({
+        adminPopoverAnchor: event.target,
+      });
+    } else {
+      this.setState({
+        profilePopoverAnchor: event.target,
+      });
+    }
+  };
+
+  togglePopoverClose = (type: string) => {
+    if (type === "admin") {
+      this.setState({
+        adminPopoverAnchor: null,
+      });
+    } else {
+      this.setState({
+        profilePopoverAnchor: null,
+      });
+    }
   };
 
   toggle = () => {
@@ -75,6 +95,7 @@ class NavMenu extends React.Component<IProps, IState> {
     const cartProducts = this.props.cart?.products;
     return (
       <header>
+        <div className="overlay" />
         <div
           style={{
             backgroundImage: `url(${cover})`,
@@ -97,15 +118,71 @@ class NavMenu extends React.Component<IProps, IState> {
               navbar
             >
               <ul className="navbar-nav flex-grow">
-                <NavItem>
+                {AuthUtils.isAdmin() ? (
+                  <>
+                    <NavItem
+                      className="navbar-item"
+                      onClick={(event: any) =>
+                        this.togglePopoverOpen(event, "admin")
+                      }
+                      id="adminPopoverTarget"
+                    >
+                      <div
+                        className="text-dark"
+                        style={{ padding: "0.5rem", cursor: "pointer" }}
+                      >
+                        Administrator
+                        <i className="material-icons navbar-icon">settings</i>
+                      </div>
+                    </NavItem>
+                    {document.getElementById("adminPopoverTarget") && (
+                      <Popover
+                        open={!!this.state.adminPopoverAnchor}
+                        anchorEl={this.state.adminPopoverAnchor}
+                        onClose={() => this.togglePopoverClose("admin")}
+                        anchorOrigin={{
+                          vertical: "bottom",
+                          horizontal: "left",
+                        }}
+                        transformOrigin={{
+                          vertical: "top",
+                          horizontal: "left",
+                        }}
+                      >
+                        <>
+                          <NavLink
+                            tag={Link}
+                            className="text-dark"
+                            to={"/admin/categories"}
+                          >
+                            Categorii
+                          </NavLink>
+                          <NavLink
+                            tag={Link}
+                            className="text-dark"
+                            to={"/admin/products"}
+                          >
+                            Produse
+                          </NavLink>
+                          <NavLink
+                            tag={Link}
+                            className="text-dark"
+                            to={"/admin/orders"}
+                          >
+                            Comenzi
+                          </NavLink>
+                        </>
+                      </Popover>
+                    )}
+                  </>
+                ) : null}
+                <NavItem className="navbar-item">
                   <NavLink tag={Link} className="text-dark" to="/">
                     Ceaiuri
-                    <i className="material-icons" style={styles.icon}>
-                      eco
-                    </i>
+                    <i className="material-icons navbar-icon">eco</i>
                   </NavLink>
                 </NavItem>
-                <NavItem>
+                <NavItem className="navbar-item">
                   <NavLink
                     tag={Link}
                     className="text-dark"
@@ -117,33 +194,44 @@ class NavMenu extends React.Component<IProps, IState> {
                         badgeContent={this.getCartProducts()}
                         color="primary"
                       >
-                        <i className="material-icons" style={styles.icon}>
+                        <i className="material-icons navbar-icon">
                           shopping_cart
                         </i>
                       </Badge>
                     ) : (
-                      <i className="material-icons" style={styles.icon}>
+                      <i className="material-icons navbar-icon">
                         shopping_cart
                       </i>
                     )}
                   </NavLink>
                 </NavItem>
-                <NavItem onClick={this.toggleProfile} id="popoverTarget">
+                <NavItem
+                  className="navbar-item"
+                  onClick={(event: any) =>
+                    this.togglePopoverOpen(event, "profile")
+                  }
+                  id="popoverTarget"
+                >
                   <div
                     className="text-dark"
                     style={{ padding: "0.5rem 1rem", cursor: "pointer" }}
                   >
                     Profil
-                    <i className="material-icons" style={styles.icon}>
-                      face
-                    </i>
+                    <i className="material-icons navbar-icon">face</i>
                   </div>
                 </NavItem>
                 <Popover
-                  placement="bottom"
-                  isOpen={this.state.profileOpen}
-                  target="popoverTarget"
-                  toggle={this.toggleProfile}
+                  open={!!this.state.profilePopoverAnchor}
+                  anchorEl={this.state.profilePopoverAnchor}
+                  onClose={() => this.togglePopoverClose("profile")}
+                  anchorOrigin={{
+                    vertical: "bottom",
+                    horizontal: "left",
+                  }}
+                  transformOrigin={{
+                    vertical: "top",
+                    horizontal: "left",
+                  }}
                 >
                   {this.props.user ? (
                     <>
@@ -153,6 +241,13 @@ class NavMenu extends React.Component<IProps, IState> {
                         to={`/profile/${this.props.user?.id}`}
                       >
                         Contul meu
+                      </NavLink>
+                      <NavLink
+                        tag={Link}
+                        className="text-dark"
+                        to={`/profile/${this.props.user?.id}/orders`}
+                      >
+                        Comenzile mele
                       </NavLink>
                       <div
                         className="text-dark"
@@ -184,7 +279,7 @@ class NavMenu extends React.Component<IProps, IState> {
 
 function mapStateToProps(state: AppState) {
   return {
-    auth_token: state.auth?.token,
+    token: state.auth?.token,
     user: state.users?.user,
     cart: state.orders.cart,
   };
@@ -197,10 +292,3 @@ const dispatchToProps = {
 };
 
 export default reduxContainer(NavMenu, mapStateToProps, dispatchToProps);
-
-const styles = {
-  icon: {
-    margin: "0 15px 0px 5px",
-    fontSize: 16,
-  },
-};

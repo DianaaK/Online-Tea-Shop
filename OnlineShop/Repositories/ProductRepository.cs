@@ -20,9 +20,12 @@ namespace OnlineShop.Repositories
                 .Include(x => x.Category)
                 .FirstOrDefault();
 
-            Console.WriteLine(product);
-
             return product;
+        }
+
+        public List<Product> GetAllActive()
+        {
+            return _context.Products.Where(x => !x.IsDeleted).Include(x => x.Category).ToList();
         }
     }
 }

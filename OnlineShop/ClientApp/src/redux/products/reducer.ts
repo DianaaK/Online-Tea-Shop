@@ -52,12 +52,32 @@ function productsReducer(
         product_list: [],
       };
     }
+    case ProductActionTypes.ADD_PRODUCT: {
+      return {
+        ...state,
+        add_product_pending: true,
+        add_product_error: null,
+      };
+    }
+    case ProductActionTypes.ADD_PRODUCT_SUCCESS: {
+      return {
+        ...state,
+        add_product_pending: false,
+        add_product_error: null,
+      };
+    }
+    case ProductActionTypes.ADD_PRODUCT_FAILED: {
+      return {
+        ...state,
+        add_product_pending: false,
+        add_product_error: action.payload,
+      };
+    }
     case ProductActionTypes.EDIT_PRODUCT: {
       return {
         ...state,
         edit_product_pending: true,
         edit_product_error: null,
-        product: null,
       };
     }
     case ProductActionTypes.EDIT_PRODUCT_SUCCESS: {
@@ -65,7 +85,6 @@ function productsReducer(
         ...state,
         edit_product_pending: false,
         edit_product_error: null,
-        product: action.payload,
       };
     }
     case ProductActionTypes.EDIT_PRODUCT_FAILED: {

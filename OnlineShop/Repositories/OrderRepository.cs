@@ -15,9 +15,19 @@ namespace OnlineShop.Repositories
         {
         }
 
+        public List<Order> GetAllActive()
+        {
+            return _context.Orders.Where(x => x.IsDeleted == false)
+                .Where(x => x.Status != (int)(OrderStatus.CART))
+                .Include(x => x.User).Include(x => x.Products)
+                .ThenInclude(x => x.Product).ToList();
+        }
+
         public List<Order> GetOrdersForUser(int userID)
         {
-            return _context.Orders.Where(x => x.UserId == userID).Where(x => x.Status != (int)(OrderStatus.CART)).ToList();
+            return _context.Orders.Where(x => x.IsDeleted == false).Where(x => x.UserId == userID)
+                .Where(x => x.Status != (int)(OrderStatus.CART))
+                .Include(x => x.Products).ThenInclude(x => x.Product).ToList();
         }
 
         public Order GetOrderById(int id)

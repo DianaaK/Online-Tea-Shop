@@ -12,6 +12,10 @@ export interface IOrdersState {
   order_list: Array<OrderDTO> | null;
   get_order_list_pending: boolean;
   get_order_list_error: string | null;
+
+  user_order_list: Array<OrderDTO> | null;
+  get_orders_user_pending: boolean;
+  get_orders_user_error: string | null;
   edit_order_pending: boolean;
   edit_order_error: string | null;
   delete_order: boolean;
@@ -33,6 +37,9 @@ export const OrdersInitialState: IOrdersState = {
   order_list: null,
   get_order_list_pending: false,
   get_order_list_error: null,
+  user_order_list: null,
+  get_orders_user_pending: false,
+  get_orders_user_error: null,
   edit_order_pending: false,
   edit_order_error: null,
   delete_order: false,
@@ -52,6 +59,9 @@ export enum OrderActionTypes {
   GET_ORDER_SUCCESS = "GET_ORDER_SUCCESS",
   GET_ORDER_FAILED = "GET_ORDER_FAILED",
   GET_ORDER_LIST = "GET_ORDER_LIST",
+  GET_ORDERS_USER = "GET_ORDERS_USER",
+  GET_ORDERS_USER_SUCCESS = "GET_ORDERS_USER_SUCCESS",
+  GET_ORDERS_USER_FAILED = "GET_ORDERS_USER_FAILED",
   GET_ORDER_LIST_SUCCESS = "GET_ORDER_LIST_SUCCESS",
   GET_ORDER_LIST_FAILED = "GET_ORDER_LIST_FAILED",
   EDIT_ORDER = "EDIT_ORDER",

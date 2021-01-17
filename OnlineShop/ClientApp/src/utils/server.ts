@@ -1,9 +1,28 @@
 ﻿import axios, { AxiosRequestConfig, Method } from "axios";
 import { store } from "../redux/configureStore";
 import { AuthActionTypes } from "../redux/authentication";
-import { decodeToken } from "react-jwt";
 
 const defOrigin = "https://localhost:5001/api";
+
+axios.interceptors.response.use(undefined, (error) => {
+  if (error.message === "Network Error" && !error.response) {
+    console.warn("Network error - Please check API");
+  }
+  const { status, data, config } = error.response;
+  if (status === 404) {
+    console.warn("Item not found");
+  }
+  if (
+    status === 400 &&
+    config.method === "get" &&
+    data.errors.hasOwnProperty("id")
+  ) {
+    console.warn("Item not found");
+  }
+  if (status === 500) {
+    console.warn("Server error - check terminal");
+  }
+});
 
 class Server {
   origin?: string;
@@ -63,7 +82,7 @@ class Server {
     const state = store.getState();
     let token = "";
     if (state && state.auth && state.auth && state.auth.token) {
-      token = state.auth.token;
+      token = state.auth.token.token;
     }
     let axiosRequest: AxiosRequestConfig = {};
     axiosRequest = {

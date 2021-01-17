@@ -14,6 +14,7 @@ import TextFieldComponent from "../shared/TextFieldComponent";
 import { AppState } from "../../redux";
 import { AuthStore } from "../../redux/authentication";
 import { UserDTO } from "../../redux/types";
+import { Hidden } from "@material-ui/core";
 
 interface IProps {
   registerAction(user: UserDTO): any;
@@ -44,11 +45,13 @@ const RegisterComponent = (props: IProps) => {
 
   return (
     <div className="row">
-      <div className="col-sm-3" />
-      <div className="col-sm-6">
-        <Card style={{ height: 300, padding: 50 }}>
+      <Hidden mdDown={true}>
+        <div className="col-sm-3" />
+      </Hidden>
+      <div className="col-sm-12 col-lg-6">
+        <Card style={{ padding: "3vw" }} className="custom-card">
           <div className="row" style={{ margin: 10 }}>
-            <div className="col-sm-6">
+            <div className="col-md-6">
               <TextFieldComponent
                 label="First name"
                 id="firstName"
@@ -65,7 +68,7 @@ const RegisterComponent = (props: IProps) => {
                 }
               />
             </div>
-            <div className="col-sm-6">
+            <div className="col-md-6">
               <TextFieldComponent
                 label="Last name"
                 id="lastName"
@@ -84,7 +87,7 @@ const RegisterComponent = (props: IProps) => {
             </div>
           </div>
           <div className="row" style={{ margin: 10 }}>
-            <div className="col-sm-6">
+            <div className="col-md-6">
               <TextFieldComponent
                 label="Email"
                 id="email"
@@ -101,7 +104,7 @@ const RegisterComponent = (props: IProps) => {
                 }
               />
             </div>
-            <div className="col-sm-6">
+            <div className="col-md-6">
               <TextFieldComponent
                 label="Password"
                 id="password"
@@ -130,11 +133,10 @@ const RegisterComponent = (props: IProps) => {
               />
             </div>
           </div>
-          <div style={{ textAlign: "center", padding: "15px 0px" }}>
+          <div className="button-container">
             <Button
               variant="contained"
               color="success"
-              style={{ color: "white" }}
               onClick={registerHandler}
             >
               Inregistrare
@@ -149,7 +151,9 @@ const RegisterComponent = (props: IProps) => {
           </div>
         </Card>
       </div>
-      <div className="col-sm-4" />
+      <Hidden mdDown={true}>
+        <div className="col-sm-3" />
+      </Hidden>
     </div>
   );
 };

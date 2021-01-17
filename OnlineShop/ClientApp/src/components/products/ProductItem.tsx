@@ -1,5 +1,6 @@
-import { Card } from "reactstrap";
+import { Button, Card } from "reactstrap";
 import { ProductDTO } from "../../redux/types";
+import placeholder from "../../assets/images/placeholder.jpg";
 
 interface IProps {
   product: ProductDTO;
@@ -7,44 +8,46 @@ interface IProps {
 }
 const ProductItem = (props: IProps) => {
   return (
-    <Card style={{ height: 400, padding: "0 10px 10px 0" }}>
+    <Card
+      style={{ height: 475, padding: "0 25px 15px 0" }}
+      className="custom-card"
+    >
       <div style={{ ...styles.container, position: "relative" }}>
-        <div
-          className="arrow-right"
-          style={{
-            backgroundColor: props.product.isInStock ? "#28A745" : "#444",
-          }}
-        >
-          <span>{props.product.isInStock ? "In stoc" : "Epuizat"}</span>
+        <div className="badge-container">
+          <div
+            className={`badge ${
+              props.product.isInStock
+                ? "gradient-available"
+                : "gradient-unavailable"
+            }`}
+          >
+            <span>{props.product.isInStock ? "In stoc" : "Epuizat"}</span>
+          </div>
         </div>
         <div
+          className="product-image"
           style={{
-            ...styles.image,
-            backgroundImage: `url(${props.product.imageUrl})`,
+            backgroundImage: `url(${
+              props.product.imageUrl ? props.product.imageUrl : placeholder
+            })`,
           }}
         />
-        <div
-          style={{
-            margin: "20px 0",
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "space-evenly",
-          }}
-        >
-          <div style={{ ...styles.title }}>{props.product.name}</div>
-          <div>
-            <div style={{ ...styles.descriptionTag }}>Descriere</div>
-            <div>{props.product.description}</div>
+        <div style={{ ...styles.content, flexDirection: "column" }}>
+          <div className="product-title">{props.product.name}</div>
+          <div className="product-category">{props.product.category?.name}</div>
+          <div className="product-description overflow-fix">
+            {props.product.description}
           </div>
-          <div style={{ ...styles.descriptionTag, alignSelf: "flex-end" }}>
-            {props.product.price} RON
-          </div>
-          <div
-            id={props.product.id + ""}
-            style={{ ...styles.checkDetails, textAlign: "center" }}
-            onClick={(event) => props.onClick(event)}
-          >
-            Vezi detalii
+          <div className="product-price">{props.product.price} RON</div>
+          <div className="button-container" style={{ textAlign: "initial" }}>
+            <Button
+              id={props.product.id + ""}
+              variant="contained"
+              color="success"
+              onClick={props.onClick}
+            >
+              Vezi detalii
+            </Button>
           </div>
         </div>
       </div>
@@ -58,29 +61,10 @@ const styles = {
     height: "100%",
     overflow: "hidden",
   },
-  image: {
-    margin: 15,
-    width: "100%",
-    height: "90%",
-    backgroundPosition: "center",
-    backgroundSize: "cover",
-  },
-  title: {
-    fontSize: 18,
-    fontWeight: 700,
-  },
-  descriptionTag: {
-    fontWeight: 600,
-    margin: "10px 0",
-    width: "100%",
-  },
-  checkDetails: {
-    padding: 10,
-    borderRadius: 5,
-    width: "100px",
-    color: "white",
-    backgroundColor: "#28A745",
-    cursor: "pointer",
+  content: {
+    margin: "20px 0",
+    display: "flex",
+    justifyContent: "space-evenly",
   },
 };
 
